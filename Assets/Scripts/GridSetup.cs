@@ -158,6 +158,7 @@ public class GridSetup : MonoBehaviour {
     private void rowRight(int row) //Moves all units in a row right, until there are no blank spaces on the rightmost column
     {
         bool allEmpty = true; //If all grid units in row are empty
+        bool areSpaces = false; //Checks if there are spaces between images
         for(int x=0;x<rowColumnSize-1;x++) //Iterate through all grid units in row
         {
             if(gridArray[row,x]==true) //If one of the units has an image
@@ -176,9 +177,22 @@ public class GridSetup : MonoBehaviour {
                 }
                 gridArray[row, 0] = false; //Make the leftmost column have no image
             }
-            CheckArray(); //Check to make sure it works
+            if(areSpaces==true) //If there is an empty space between images
+            {
+                for(int z=rowColumnSize-1; z>0;z--) //Iterate through the row
+                {
+                    if(gridArray[row,z]!=true) //If the unit being looked at is empty
+                    {
+                        for (int i = z; i > 0; i--) //For each unit in the row starting from unit
+                        {
+                            gridArray[row, i] = gridArray[row, i - 1]; //Move all units in the row right
+                        }
+                        gridArray[row, 0] = false; //Make the leftmost column have no image
+                    }
+                }
+            }
         }
-
+        CheckArray(); //Check to make sure it works
     }
 
     private void rowLeft(int row)
