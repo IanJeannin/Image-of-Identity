@@ -51,7 +51,7 @@ public class GridSetup : MonoBehaviour {
 
     }
 
-    private void CheckArray()
+    private void CheckArray() //Method to check array is functioning properly using Debug.Log
     {
         string arrayString = "";
 
@@ -59,9 +59,9 @@ public class GridSetup : MonoBehaviour {
         {
             for (int c = 0; c < rowColumnSize; c++)
             {
-              arrayString += string.Format("{0}", gridArray[b, c]);
+              arrayString += string.Format("{0}", gridArray[b, c]); //Add each unit in a single row
             }
-            arrayString += System.Environment.NewLine;
+            arrayString += System.Environment.NewLine; //Start a new line for a new row
         }
         Debug.Log(arrayString);
     }
@@ -170,7 +170,7 @@ public class GridSetup : MonoBehaviour {
         {
             while (gridArray[row, rowColumnSize - 1] == false) //While the rightmost column has no image
             {
-                for (int i = rowColumnSize - 1; i > 1; i--) //For each unit in the row
+                for (int i = rowColumnSize - 1; i > 0; i--) //For each unit in the row
                 {
                     gridArray[row, i] = gridArray[row, i - 1]; //Move all units in the row right
                 }
@@ -194,13 +194,13 @@ public class GridSetup : MonoBehaviour {
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
-            while (gridArray[row, 0] == false) //Moves all units in a row left, until there are no blank spaces on the leftmost column
+            while (gridArray[row, 0] == false) //While the leftmost column has no image
             {
-                for (int i = 0; i < rowColumnSize - 1; i++) //While the leftmost column has no image
+                for (int i = 0; i < rowColumnSize - 1; i++) //For each unit in the row
                 {
-                    gridArray[row, i] = gridArray[row, i + 1]; //For each unit in the row
+                    gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
                 }
-                gridArray[row, rowColumnSize - 1] = false; //Move all units in the row left
+                gridArray[row, rowColumnSize - 1] = false; //Make the rightmost column have no image
             }
             CheckArray(); //Check to make sure it works
         }
@@ -209,7 +209,27 @@ public class GridSetup : MonoBehaviour {
 
     private void columnUp(int column)
     {
+        bool allEmpty = true; //If all grid units in column are empty
+        for (int y = 0; y < rowColumnSize - 1; y++) //Iterate through all grid units in column
+        {
+            if (gridArray[y, column] == true) //If one of the units has an image
+            {
+                allEmpty = false; //All Empty is false
+            }
+        }
 
+        if (allEmpty == false) //As long as at least one unit in the row has an image...
+        {
+            while (gridArray[0, column] == false) //While the topmost row has no image
+            {
+                for (int i = 0; i < rowColumnSize - 1; i++) //For each unit in the column
+                {
+                    gridArray[i, column] = gridArray[i+1, column]; //Move all units in the column up
+                }
+                gridArray[rowColumnSize-1, column] = false; //Set Bottom Column unit to no image
+            }
+            CheckArray(); //Check to make sure it works
+        }
     }
 
     private void columnDown(int column)
