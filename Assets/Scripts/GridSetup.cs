@@ -160,7 +160,7 @@ public class GridSetup : MonoBehaviour {
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
         int emergencyStop = 0; //Used in case of infinite loop
-        for(int x=0;x<rowColumnSize-1;x++) //Iterate through all grid units in row
+        for(int x=0;x<rowColumnSize;x++) //Iterate through all grid units in row
         {
             if(gridArray[row,x]==true) //If one of the units has an image
             {
@@ -203,7 +203,7 @@ public class GridSetup : MonoBehaviour {
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
         int emergencyStop = 0;
-        for (int x = 0; x < rowColumnSize - 1; x++) //Iterate through all grid units in row
+        for (int x = 0; x < rowColumnSize ; x++) //Iterate through all grid units in row
         {
             if (gridArray[row, x] == true) //If one of the units has an image
             {
@@ -248,7 +248,7 @@ public class GridSetup : MonoBehaviour {
         bool allEmpty = true; //If all grid units in column are empty
         bool areSpaces = checkForColumnSpaces(column); //Used to check if there are spaces between images
         int emergencyStop = 0; //Used in case of infinite loop
-        for (int y = 0; y < rowColumnSize - 1; y++) //Iterate through all grid units in column
+        for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
             if (gridArray[y, column] == true) //If one of the units has an image
             {
@@ -293,7 +293,7 @@ public class GridSetup : MonoBehaviour {
         bool allEmpty = true; //If all grid units in column are empty
         bool areSpaces = checkForColumnSpaces(column); //Used to check if there are spaces between images
         int emergencyStop = 0; //Used in case of infinite loop
-        for (int y = 0; y < rowColumnSize - 1; y++) //Iterate through all grid units in column
+        for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
             if (gridArray[y, column] == true) //If one of the units has an image
             {
