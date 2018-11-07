@@ -158,7 +158,8 @@ public class GridSetup : MonoBehaviour {
     private void rowRight(int row) //Moves all units in a row right, until there are no blank spaces on the rightmost column
     {
         bool allEmpty = true; //If all grid units in row are empty
-        bool areSpaces = false; //Checks if there are spaces between images
+        bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
+        int emergencyStop = 0; //Used in case of infinite loop
         for(int x=0;x<rowColumnSize-1;x++) //Iterate through all grid units in row
         {
             if(gridArray[row,x]==true) //If one of the units has an image
@@ -177,7 +178,7 @@ public class GridSetup : MonoBehaviour {
                 }
                 gridArray[row, 0] = false; //Make the leftmost column have no image
             }
-            if(areSpaces==true) //If there is an empty space between images
+            while(areSpaces==true && emergencyStop < rowColumnSize) //If there is an empty space between images
             {
                 for(int z=rowColumnSize-1; z>0;z--) //Iterate through the row
                 {
@@ -190,6 +191,8 @@ public class GridSetup : MonoBehaviour {
                         gridArray[row, 0] = false; //Make the leftmost column have no image
                     }
                 }
+                emergencyStop++;
+                areSpaces = checkForRowSpaces(row);
             }
         }
         CheckArray(); //Check to make sure it works
@@ -198,6 +201,8 @@ public class GridSetup : MonoBehaviour {
     private void rowLeft(int row)
     {
         bool allEmpty = true; //If all grid units in row are empty
+        bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
+        int emergencyStop = 0;
         for (int x = 0; x < rowColumnSize - 1; x++) //Iterate through all grid units in row
         {
             if (gridArray[row, x] == true) //If one of the units has an image
@@ -216,6 +221,23 @@ public class GridSetup : MonoBehaviour {
                 }
                 gridArray[row, rowColumnSize - 1] = false; //Make the rightmost column have no image
             }
+            while (areSpaces == true&&emergencyStop<rowColumnSize) //If there is an empty space between images
+            {
+                for (int z = 0; z < rowColumnSize - 1; z++) //Iterate through the row
+                {
+                    if (gridArray[row, z] != true) //If the unit being looked at is empty
+                    {
+                        for (int i = z; i < rowColumnSize-1; i++) //For each unit in the row starting from unit
+                        {
+                            gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
+                        }
+                        gridArray[row, rowColumnSize-1] = false; //Make the rightmost column have no image
+                    }
+                    
+                }
+                emergencyStop++;
+                areSpaces = checkForRowSpaces(row);
+            }
             CheckArray(); //Check to make sure it works
         }
 
@@ -224,6 +246,8 @@ public class GridSetup : MonoBehaviour {
     private void columnUp(int column)
     {
         bool allEmpty = true; //If all grid units in column are empty
+        bool areSpaces = checkForColumnSpaces(column); //Used to check if there are spaces between images
+        int emergencyStop = 0; //Used in case of infinite loop
         for (int y = 0; y < rowColumnSize - 1; y++) //Iterate through all grid units in column
         {
             if (gridArray[y, column] == true) //If one of the units has an image
@@ -242,12 +266,112 @@ public class GridSetup : MonoBehaviour {
                 }
                 gridArray[rowColumnSize-1, column] = false; //Set Bottom Column unit to no image
             }
+            while (areSpaces == true&&emergencyStop<rowColumnSize) //If there is an empty space between images
+            {
+                for (int z = 0; z < rowColumnSize - 1; z++) //Iterate through the column
+                {
+                    if (gridArray[z, column] != true) //If the unit being looked at is empty
+                    {
+                        for (int i = z; i < rowColumnSize - 1; i++) //For each unit in the column starting from unit
+                        {
+                            gridArray[i, column] = gridArray[i+1, column]; //Move all units in the column Up
+                        }
+                        gridArray[rowColumnSize-1, column] = false; //Make the bottom-most column have no image
+                    }
+                   
+                }
+                emergencyStop++;
+                areSpaces = checkForColumnSpaces(column);
+            }
             CheckArray(); //Check to make sure it works
+            
         }
     }
 
     private void columnDown(int column)
     {
+        bool allEmpty = true; //If all grid units in column are empty
+        bool areSpaces = checkForColumnSpaces(column); //Used to check if there are spaces between images
+        int emergencyStop = 0; //Used in case of infinite loop
+        for (int y = 0; y < rowColumnSize - 1; y++) //Iterate through all grid units in column
+        {
+            if (gridArray[y, column] == true) //If one of the units has an image
+            {
+                allEmpty = false; //All Empty is false
+            }
+        }
 
+        if (allEmpty == false) //As long as at least one unit in the row has an image...
+        {
+            while (gridArray[rowColumnSize-1, column] == false) //While the bottom-most row has no image
+            {
+                for (int i = rowColumnSize-1; i > 0; i--) //For each unit in the column
+                {
+                    gridArray[i, column] = gridArray[i - 1, column]; //Move all units in the column down
+                }
+                gridArray[0, column] = false; //Set Top Column unit to no image
+            }
+            while (areSpaces == true&&emergencyStop<rowColumnSize) //If there is an empty space between images
+            {
+                for (int z = rowColumnSize-1; z > 0; z--) //Iterate through the column
+                {
+                    if (gridArray[z, column] != true) //If the unit being looked at is empty
+                    {
+                        for (int i = z; i > 0; i--) //For each unit in the column starting from unit
+                        {
+                            gridArray[i, column] = gridArray[i - 1, column]; //Move all units in the column Down
+                        }
+                        gridArray[0, column] = false; //Make the Top-most column have no image
+                    }
+                }
+                emergencyStop++;
+                areSpaces = checkForColumnSpaces(column);
+            }
+            CheckArray(); //Check to make sure it works
+        }
+    }
+
+    private bool checkForRowSpaces(int row)
+    {
+        for(int column=0;column<rowColumnSize/2;column++) //Iterate up to half the row index
+        {
+            if(gridArray[row,column]==true) //When one image is true
+            {
+               
+                if(gridArray[row,column+1]==false) //If the next one is true
+                {
+                    for (int start = column + 1; start < rowColumnSize; start++) //Iterate up to the last row index
+                    {
+                        if (gridArray[row, start] == true) //If the next one isn't true any after is
+                        {
+                            return true; //Then there is a gap between true's
+                        }
+                    }
+                }
+            }  
+        }
+        return false; //Return false if no gaps were found
+    }
+
+    private bool checkForColumnSpaces(int column)
+    {
+        for (int row = 0; row < rowColumnSize / 2; row++) //Iterate up to half the row index
+        {
+            if (gridArray[row, column] == true) //When one image is true
+            {
+
+                if (gridArray[row + 1, column] == false) //If the next one is true do nothing
+                {
+                    for (int start = row+1; start < rowColumnSize; start++) //Iterate up to the last row index
+                    {
+                        if (gridArray[start, column] == true) //If the next one isn't true but the one after is
+                        {
+                            return true; //Then there is a gap between true's
+                        }
+                    }
+                }
+            }
+        }
+        return false; //Return false if no gaps were found
     }
 }
