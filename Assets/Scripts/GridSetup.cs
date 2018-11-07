@@ -32,7 +32,7 @@ public class GridSetup : MonoBehaviour {
             if ((i+1)%rowColumnSize != 0&&numberOfObjects>0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
             {
                 newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
-                newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
+                //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
                 numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
                 gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
                 gridArrayColumn++;
