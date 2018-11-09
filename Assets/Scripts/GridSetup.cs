@@ -20,7 +20,7 @@ public class GridSetup : MonoBehaviour {
         CheckArray();
     }
 
-    private void CreateGrid()
+    /*private void CreateGrid()
     {
         GameObject newObject; //Create Instance of Game Object
        int numberOfObjects = 9; //Sets number of Objects player has chosen
@@ -31,8 +31,10 @@ public class GridSetup : MonoBehaviour {
         {
             if ((i+1)%rowColumnSize != 0&&numberOfObjects>0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
             {
-                newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
+                // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
                 //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
+                newObject = GameObject.Find("Polygon");
+                Instantiate(newObject, transform);
                 numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
                 gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
                 gridArrayColumn++;
@@ -46,6 +48,49 @@ public class GridSetup : MonoBehaviour {
                   gridArrayColumn = 0; //Sets gridArrayColumn back to 0
                     gridArrayRow++; //Increases the gridArray row by 1
                 }
+            }
+        }
+
+    }*/
+
+    private void CreateGrid()
+    {
+        GameObject newObject; //Create Instance of Game Object
+        int numberOfObjects = 9; //Sets number of Objects player has chosen
+        int gridArrayRow = 0; //For selecting row of gridArray
+        int gridArrayColumn = 0; //For selecting the column of the gridArray
+        string nameOfObject;
+        int objectNumber = 0;
+        int xPos = -10;
+        int yPos = 1;
+        int size = 1;
+
+        for (int i = 0; i < numberOfGridUnits; i++)
+        {
+            if ((i + 1) % rowColumnSize != 0 && numberOfObjects > 0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
+            {
+                // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
+                //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
+                nameOfObject = "Polygon(" + objectNumber+")";
+                newObject = GameObject.Find(nameOfObject);
+                Instantiate(newObject, transform);
+                newObject.transform.position=new Vector2(xPos, yPos); //Sets object to proper position
+                numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
+                xPos += 1;
+                gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
+                gridArrayColumn++;
+            }
+            else if((i+1)%rowColumnSize==0)//If Square is in last column
+            {
+                nameOfObject = "Polygon(" + objectNumber + ")";
+                newObject = GameObject.Find(nameOfObject);
+                newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
+                numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
+                xPos =-10;
+                gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
+                gridArrayColumn = 0; //Sets gridArrayColumn back to 0
+                gridArrayRow++; //Increases the gridArray row by 1
+                yPos--;
             }
         }
 
