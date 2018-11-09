@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class GridSetup : MonoBehaviour {
 
-    [SerializeField]
+   /* [SerializeField]
     private GameObject sampleImage;  //Square image used for testing
     [SerializeField]
     private GameObject blankImage; //Blank Square used for empty spaces
+    */
 
     private int rowColumnSize = 4;
     private int numberOfGridUnits = 16; //Set Medium Sized Grid with 16 units
@@ -61,9 +62,9 @@ public class GridSetup : MonoBehaviour {
         int gridArrayColumn = 0; //For selecting the column of the gridArray
         string nameOfObject;
         int objectNumber = 0;
-        int xPos = -10;
-        int yPos = 1;
-        int size = 1;
+        float xPos = 0f;
+        float yPos = 1f;
+        float size = 1.25f;
 
         for (int i = 0; i < numberOfGridUnits; i++)
         {
@@ -71,27 +72,50 @@ public class GridSetup : MonoBehaviour {
             {
                 // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
                 //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
-                nameOfObject = "Polygon(" + objectNumber+")";
+                nameOfObject = "Polygon (" + objectNumber + ")";
                 newObject = GameObject.Find(nameOfObject);
-                Instantiate(newObject, transform);
-                newObject.transform.position=new Vector2(xPos, yPos); //Sets object to proper position
-                numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
-                xPos += 1;
-                gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
-                gridArrayColumn++;
-            }
-            else if((i+1)%rowColumnSize==0)//If Square is in last column
-            {
-                nameOfObject = "Polygon(" + objectNumber + ")";
-                newObject = GameObject.Find(nameOfObject);
+                //POSSIBLY USE  Instantiate(newObject, transform);
                 newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
                 numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
-                xPos =-10;
+                xPos += size;
                 gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
+                gridArrayColumn++;
+                objectNumber++; //When image is used, move to next image
+            }
+            else if ((i + 1) % rowColumnSize == 0)//If Square is in last column
+            {
+                nameOfObject = "Blank"; //Calls blank image
+                newObject = GameObject.Find(nameOfObject); //Instantiates object
+                Instantiate(newObject);
+                newObject.transform.position = new Vector3(xPos, yPos,0); //Sets object to proper position
+                xPos = 0;
+                gridArray[gridArrayRow, gridArrayColumn] = false; //Sets gridArray index as false
                 gridArrayColumn = 0; //Sets gridArrayColumn back to 0
                 gridArrayRow++; //Increases the gridArray row by 1
-                yPos--;
+                yPos-=size;
+                
             }
+            else
+            {
+                nameOfObject = "Blank";
+                newObject = GameObject.Find(nameOfObject);
+                Instantiate(newObject);
+                newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
+                gridArray[gridArrayRow, gridArrayColumn] = false; //Sets gridArray index as false
+                if ((i + 1) % rowColumnSize != 0) //If square is not in last column
+                {
+                    xPos += size; //Moves next image to adjacent space
+                    gridArrayColumn++; //Increases gridArray column by 1
+                }
+                else if ((i + 1) % rowColumnSize == 0 && numberOfObjects > 0)//If Square is in last column
+                {
+                    yPos -= size; //Moves next image to the next row
+                    gridArrayColumn = 0; //Sets gridArrayColumn back to 0
+                    gridArrayRow++; //Increases the gridArray row by 1
+                }
+
+            }
+            
         }
 
     }
