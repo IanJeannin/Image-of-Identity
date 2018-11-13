@@ -621,7 +621,7 @@ public class GridSetup : MonoBehaviour
         {
             while (gridArray[rowColumnSize - 1, column] == false) //While the bottom-most row has no image
             {
-                for (int i = rowColumnSize - 1; i > 0; i--) //For each unit in the column
+                for (int i = rowColumnSize - 1; i >= 0; i--) //For each unit in the column
                 {
                     if (gridArray[i, column] == true) //If unit is an image
                     {
@@ -650,22 +650,23 @@ public class GridSetup : MonoBehaviour
                             GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Move that image down
                         }
                     }
-                    if (i != 3) //Stops the array from going out of bounds
+                    if (i != 0) //Stops the array from going out of bounds
                     {
-                        gridArray[i, column] = gridArray[i - 1, column]; //Move all units in the column down
+                        gridArray[i, column] = gridArray[i -+1, column]; //Move all units in the column down
                     }
-                    for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
+                   
+                }
+                 for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
                     {
-                        if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1 + size)) //Find the blank image that matches the position of the unit in the first row in column (Add size due to all blank images being moved up)
+                        if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1-rowColumnSize* size)) //Find the blank image that matches the position of the unit in the last row in column (Add size due to all blank images being moved up)
                         {
-                            GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
+                            GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1); //Set that image position to the first row
                         }
                     }
-                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 + size)) //If the original blank image matches position of first column in row (Add size due to all blank images being moved up)
+                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (rowColumnSize - 1 * size) + size)) //If the original blank image matches position of last column in row (Add size due to all blank images being moved up)
                     {
-                        GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
+                        GameObject.Find("Blank").transform.position = new Vector3(column * size, 1); //Set that image position to the first row
                     }
-                }
                 gridArray[0, column] = false; //Set Top Column unit to no image
             }
             while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
