@@ -27,39 +27,6 @@ public class GridSetup : MonoBehaviour
         CheckArray();
     }
 
-    /*private void CreateGrid() USED WHEN USING UNITY GRIDS, SWITCHED TO MOVING OBJECTS CERTAIN DISTANCES
-    {
-        GameObject newObject; //Create Instance of Game Object
-       int numberOfObjects = 9; //Sets number of Objects player has chosen
-        int gridArrayRow = 0; //For selecting row of gridArray
-        int gridArrayColumn = 0; //For selecting the column of the gridArray
-
-        for(int i=0; i<numberOfGridUnits;i++)
-        {
-            if ((i+1)%rowColumnSize != 0&&numberOfObjects>0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
-            {
-                // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
-                //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
-                newObject = GameObject.Find("Polygon");
-                Instantiate(newObject, transform);
-                numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
-                gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
-                gridArrayColumn++;
-            }
-            else //If Square is in last column or all chosen images are used, fill with a blank space
-            {
-                newObject = (GameObject)Instantiate(blankImage, transform); //Creates blank square
-                gridArray[gridArrayRow, gridArrayColumn] = false; //Sets gridArray index as false
-                if((i+1)%rowColumnSize==0) //Prevents gridArrayColumn and Row from changing until 'i' reaches last column of grid
-                {
-                  gridArrayColumn = 0; //Sets gridArrayColumn back to 0
-                    gridArrayRow++; //Increases the gridArray row by 1
-                }
-            }
-        }
-
-    }*/
-
     private void CreateGrid()
     {
         GameObject newObject; //Create Instance of Game Object
@@ -73,6 +40,13 @@ public class GridSetup : MonoBehaviour
 
         for (int i = 0; i < numberOfGridUnits; i++)
         {
+            nameOfObject = "Blank"; //Calls blank image
+            newObject = GameObject.Find(nameOfObject); //Instantiates object
+            newBlank = Instantiate(newObject);
+            newBlank.name = "Blank" + numberOfBlankImages;
+            numberOfBlankImages++; //Increase the variable marking down how many blank images there are
+            newObject.transform.position = new Vector3(xPos, yPos, 0); //Sets object to proper position
+
             if ((i + 1) % rowColumnSize != 0 && numberOfObjects > 0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
             {
                 // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
@@ -89,27 +63,15 @@ public class GridSetup : MonoBehaviour
             }
             else if ((i + 1) % rowColumnSize == 0)//If Square is in last column
             {
-                nameOfObject = "Blank"; //Calls blank image
-                newObject = GameObject.Find(nameOfObject); //Instantiates object
-                newBlank = Instantiate(newObject);
-                newBlank.name = "Blank" + numberOfBlankImages;
-                newObject.transform.position = new Vector3(xPos, yPos, 0); //Sets object to proper position
                 xPos = 0;
                 gridArray[gridArrayRow, gridArrayColumn] = false; //Sets gridArray index as false
                 gridArrayColumn = 0; //Sets gridArrayColumn back to 0
                 gridArrayRow++; //Increases the gridArray row by 1
-                numberOfBlankImages++; //Increase the variable marking down how many blank images there are
                 yPos -= size;
 
             }
             else
             {
-                nameOfObject = "Blank"; //Calls blank image
-                newObject = GameObject.Find(nameOfObject);
-                newBlank = Instantiate(newObject);
-                newBlank.name = "Blank" + numberOfBlankImages;
-                numberOfBlankImages++; //Increase the variable marking down how many blank images there are
-                newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
                 gridArray[gridArrayRow, gridArrayColumn] = false; //Sets gridArray index as false
                 if ((i + 1) % rowColumnSize != 0) //If square is not in last column
                 {
@@ -265,36 +227,12 @@ public class GridSetup : MonoBehaviour
                             }
                         }
                     }
-                    else
-                    {
-                        for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                        {
-                            if (GameObject.Find("Blank" + z).transform.position == new Vector3(i * size, 1 - (row * size))) //Find the blank image that matches the position of the unit
-                            {
-                                GameObject.Find("Blank" + z).transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Moves image right
-                            }
-                        }
-                        if (GameObject.Find("Blank").transform.position == new Vector3(i * size, 1 - (row * size))) //If the original blank image matches position of unit
-                        {
-                            GameObject.Find("Blank").transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Move that image right
-                        }
-                    }
                     if (i != 0) //Stops the array from going out of bounds
                     {
                         gridArray[row, i] = gridArray[row, i - 1]; //Move all units in the row right
                     }
                 }
-                for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                {
-                    if (GameObject.Find("Blank" + z).transform.position == new Vector3((3 * size) + size, 1 - (row * size))) //Find the blank image that matches the position of the final column in row
-                    {
-                        GameObject.Find("Blank" + z).transform.position = new Vector3(0, 1 - (row * size)); //Set that image position to the first column
-                    }
-                }
-                if (GameObject.Find("Blank").transform.position == new Vector3((3 * size) + size, 1 - (row * size))) //If the original blank image matches position of final column in row
-                {
-                    GameObject.Find("Blank").transform.position = new Vector3(0, 1 - (row * size)); //Set that image position to the first column
-                }
+               
                 gridArray[row, 0] = false; //Make the leftmost column have no image
             }
             while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
@@ -317,18 +255,6 @@ public class GridSetup : MonoBehaviour
                             {
                                 gridArray[row, i] = gridArray[row, i - 1]; //Move all units in the row right
                             }
-                        }
-
-                        for (int c = 0; c < numberOfBlankImages; c++) //Iterates through all blank images
-                        {
-                            if (GameObject.Find("Blank" + z).transform.position == new Vector3(z * size, 1 - (row * size))) //Find the blank image that matches the position of the final column in row
-                            {
-                                GameObject.Find("Blank" + z).transform.position = new Vector3(0, 1 - (row * size)); //Set that image position to the first column
-                            }
-                        }
-                        if (GameObject.Find("Blank").transform.position == new Vector3(z * size, 1 - (row * size))) //If the original blank image matches position of final column in row
-                        {
-                            GameObject.Find("Blank").transform.position = new Vector3(0, 1 - (row * size)); //Set that image position to the first column
                         }
 
                         gridArray[row, 0] = false; //Make the leftmost column have no image
@@ -373,38 +299,13 @@ public class GridSetup : MonoBehaviour
                             }
                         }
                     }
-                    else
-                    {
-                        for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                        {
-                            if (GameObject.Find("Blank" + z).transform.position == new Vector3(i * size, 1 - (row * size))) //Find the blank image that matches the position of the unit
-                            {
-                                GameObject.Find("Blank" + z).transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Moves image left
-                            }
-                        }
-                        if (GameObject.Find("Blank").transform.position == new Vector3(i * size, 1 - (row * size))) //If the original blank image matches position of unit
-                        {
-                            GameObject.Find("Blank").transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Move that image left
-                        }
-                    }
+                    
                     if (i != 3) //Stops the array from going out of bounds
                     {
                         gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
                     }
                 }
-
-                for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                {
-                    if (GameObject.Find("Blank" + z).transform.position == new Vector3(0 - size, 1 - (row * size))) //Find the blank image that matches the position of the first column in row (Subtract size from grid position due to all blank images moving left)
-                    {
-                        GameObject.Find("Blank" + z).transform.position = new Vector3(3 * size, 1 - (row * size)); //Set that image position to the final column
-                    }
-                }
-                if (GameObject.Find("Blank").transform.position == new Vector3(0 - size, 1 - (row * size))) //If the original blank image matches position of first column in row (Subtract size from grid position due to all blank images moving left)
-                {
-                    GameObject.Find("Blank").transform.position = new Vector3(3 * size, 1 - (row * size)); //Set that image position to the final column
-                }
-
+              
                 gridArray[row, rowColumnSize - 1] = false; //Make the rightmost column have no image
 
             }
@@ -427,20 +328,7 @@ public class GridSetup : MonoBehaviour
                                     }
                                 }
                             }
-                            else
-                            {
-                                for (int j = 0; j < numberOfBlankImages; j++) //Iterates through all blank images
-                                {
-                                    if (GameObject.Find("Blank" + z).transform.position == new Vector3(i * size, 1 - (row * size))) //Find the blank image that matches the position of the unit
-                                    {
-                                        GameObject.Find("Blank" + z).transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Moves image left
-                                    }
-                                }
-                                if (GameObject.Find("Blank").transform.position == new Vector3(i * size, 1 - (row * size))) //If the original blank image matches position of unit
-                                {
-                                    GameObject.Find("Blank").transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Move that image left
-                                }
-                            }
+                            
                             if (i != 3) //Stops the array from going out of bounds
                             {
                                 gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
@@ -495,38 +383,13 @@ public class GridSetup : MonoBehaviour
                         }
 
                     }
-                    else if (gridArray[i, column] == false) //If unit is blank
-                    {
-                        for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                        {
-                            if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
-                            {
-                                GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Moves image up
-                            }
-                        }
-                        if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (i * size))) //If the original blank image matches position of unit
-                        {
-                            GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Move that image up
-                        }
-                    }
+                  
                     if (i != 3) //Stops the array from going out of bounds
                     {
                         gridArray[i, column] = gridArray[i + 1, column]; //Move all units in the column up
                     }
                 }
-
-                for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                {
-                    if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1 + size)) //Find the blank image that matches the position of the unit in the first row in column (Add size due to all blank images being moved up)
-                    {
-                        GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
-                    }
-                }
-                if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 + size)) //If the original blank image matches position of first column in row (Add size due to all blank images being moved up)
-                {
-                    GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
-                }
-
+                gridArray[rowColumnSize - 1, column] = false;
             }
             while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
             {
@@ -552,20 +415,7 @@ public class GridSetup : MonoBehaviour
                                     }
 
                                 }
-                                else if (gridArray[i, column] == false)
-                                {
-                                    for (int j = 0; j < numberOfBlankImages; j++) //Iterates through all blank images
-                                    {
-                                        if (GameObject.Find("Blank" + j).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
-                                        {
-                                            GameObject.Find("Blank" + j).transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Moves image up
-                                        }
-                                    }
-                                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (i * size))) //If the original blank image matches position of unit
-                                    {
-                                        GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Move that image up
-                                    }
-                                }
+                               
                                 if (i != 3) //Stops the array from going out of bounds
                                 {
                                     gridArray[i, column] = gridArray[i + 1, column]; //Move all units in the column up
@@ -578,17 +428,6 @@ public class GridSetup : MonoBehaviour
 
                 }
 
-                for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                {
-                    if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1-((indexOfSpace-1)*size))) //Find the blank image that matches the position of the unit in the first row that there was a space (Index is subtracted by 1 due tospaces moving up)
-                    {
-                        GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
-                    }
-                }
-                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1-((indexOfSpace-1)*size))) //If the original blank image matches position of row there was a space (Index is subtracted by 1 due tospaces moving up)
-                {
-                    GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((rowColumnSize - 1) * size)); //Set that image position to the final row
-                }
                 hasBeenRunThrough = false;
                 areSpaces = checkForColumnSpaces(column);
                 emergencyStop++;
@@ -636,37 +475,14 @@ public class GridSetup : MonoBehaviour
                         }
 
                     }
-                    else if (gridArray[i, column] == false) //If unit is blank
-                    {
-                        for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                        {
-                            if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
-                            {
-                                GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Moves image down
-                            }
-                        }
-                        if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (i * size))) //If the original blank image matches position of unit
-                        {
-                            GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Move that image down
-                        }
-                    }
+                    
                     if (i != 0) //Stops the array from going out of bounds
                     {
                         gridArray[i, column] = gridArray[i -+1, column]; //Move all units in the column down
                     }
                    
                 }
-                 for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                    {
-                        if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1-(rowColumnSize* size))) //Find the blank image that matches the position of the unit in the last row in column (Add size due to all blank images being moved down)
-                        {
-                            GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1); //Set that image position to the first row
-                        }
-                    }
-                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (rowColumnSize * size))) //If the original blank image matches position of last column in row (Add size due to all blank images being moved down)
-                    {
-                        GameObject.Find("Blank").transform.position = new Vector3(column * size, 1); //Set that image position to the first row
-                    }
+                 
                 gridArray[0, column] = false; //Set Top Column unit to no image
             }
             while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
@@ -693,20 +509,7 @@ public class GridSetup : MonoBehaviour
                                     }
 
                                 }
-                                else if (gridArray[i, column] == false)
-                                {
-                                    for (int j = 0; j < numberOfBlankImages; j++) //Iterates through all blank images
-                                    {
-                                        if (GameObject.Find("Blank" + j).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
-                                        {
-                                            GameObject.Find("Blank" + j).transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Moves image down
-                                        }
-                                    }
-                                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (i * size))) //If the original blank image matches position of unit
-                                    {
-                                        GameObject.Find("Blank").transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Move that image down
-                                    }
-                                }
+                                
                                 if (i != 3) //Stops the array from going out of bounds
                                 {
                                     gridArray[i, column] = gridArray[i + 1, column]; //Move all units in the column down
@@ -718,17 +521,6 @@ public class GridSetup : MonoBehaviour
                     }
                 }
 
-                for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
-                {
-                    if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1 - ((indexOfSpace + 1) * size))) //Find the blank image that matches the position of the unit in the first row that there was a space (Index is added by 1 due tospaces moving down)
-                    {
-                        GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1); //Set that image position to the first row
-                    }
-                }
-                if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - ((indexOfSpace + 1) * size))) //If the original blank image matches position of row there was a space (Index is added by 1 due tospaces moving down)
-                {
-                    GameObject.Find("Blank").transform.position = new Vector3(column * size, 1); //Set that image position to the final row
-                }
                 hasBeenRunThrough = false;
                 areSpaces = checkForColumnSpaces(column);
                 emergencyStop++;
