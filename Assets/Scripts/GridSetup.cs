@@ -658,12 +658,12 @@ public class GridSetup : MonoBehaviour
                 }
                  for (int z = 0; z < numberOfBlankImages; z++) //Iterates through all blank images
                     {
-                        if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1-rowColumnSize* size)) //Find the blank image that matches the position of the unit in the last row in column (Add size due to all blank images being moved up)
+                        if (GameObject.Find("Blank" + z).transform.position == new Vector3(column * size, 1-(rowColumnSize* size))) //Find the blank image that matches the position of the unit in the last row in column (Add size due to all blank images being moved down)
                         {
                             GameObject.Find("Blank" + z).transform.position = new Vector3(column * size, 1); //Set that image position to the first row
                         }
                     }
-                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (rowColumnSize - 1 * size) + size)) //If the original blank image matches position of last column in row (Add size due to all blank images being moved up)
+                    if (GameObject.Find("Blank").transform.position == new Vector3(column * size, 1 - (rowColumnSize * size))) //If the original blank image matches position of last column in row (Add size due to all blank images being moved down)
                     {
                         GameObject.Find("Blank").transform.position = new Vector3(column * size, 1); //Set that image position to the first row
                     }
