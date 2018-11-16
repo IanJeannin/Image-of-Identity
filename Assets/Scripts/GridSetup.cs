@@ -40,12 +40,14 @@ public class GridSetup : MonoBehaviour
 
         for (int i = 0; i < numberOfGridUnits; i++)
         {
+
             nameOfObject = "Blank"; //Calls blank image
             newObject = GameObject.Find(nameOfObject); //Instantiates object
             newBlank = Instantiate(newObject);
             newBlank.name = "Blank" + numberOfBlankImages;
             numberOfBlankImages++; //Increase the variable marking down how many blank images there are
-            newObject.transform.position = new Vector3(xPos, yPos, 0); //Sets object to proper position
+            newObject.transform.position = new Vector3(xPos, yPos, 5); //Sets object to proper position
+
 
             if ((i + 1) % rowColumnSize != 0 && numberOfObjects > 0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
             {
@@ -237,18 +239,21 @@ public class GridSetup : MonoBehaviour
             }
             while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
             {
-                for (int z = rowColumnSize - 1; z > 0; z--) //Iterate through the row
+                for (int z = rowColumnSize - 1; z >= 0; z--) //Iterate through the row
                 {
                     if (gridArray[row, z] != true) //If the unit being looked at is empty
                     {
-                        for (int i = z; i > 0; i--) //For each unit left of the empty unit
+                        for (int i = z; i >= 0; i--) //For each unit left of the empty unit
                         {
-                            for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
+                            if (gridArray[row, i] == true)
                             {
-                                nameOfObject = "Polygon (" + numberOfObject + ")";
-                                if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
+                                for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                                 {
-                                    GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
+                                    nameOfObject = "Polygon (" + numberOfObject + ")";
+                                    if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
+                                    {
+                                        GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
+                                    }
                                 }
                             }
                             if (i != 0) //Stops the array from going out of bounds
@@ -256,7 +261,6 @@ public class GridSetup : MonoBehaviour
                                 gridArray[row, i] = gridArray[row, i - 1]; //Move all units in the row right
                             }
                         }
-
                         gridArray[row, 0] = false; //Make the leftmost column have no image
                     }
                 }
@@ -271,7 +275,6 @@ public class GridSetup : MonoBehaviour
     {
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
-        int emergencyStop = 0;
         string nameOfObject;
         for (int x = 0; x < rowColumnSize; x++) //Iterate through all grid units in row
         {
@@ -309,13 +312,13 @@ public class GridSetup : MonoBehaviour
                 gridArray[row, rowColumnSize - 1] = false; //Make the rightmost column have no image
 
             }
-            while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
+            while (areSpaces == true) //If there is an empty space between images
             {
-                for (int z = 0; z < rowColumnSize - 1; z++) //Iterate through the row
+                for (int z = 0; z <= rowColumnSize - 1; z++) //Iterate through the row
                 {
                     if (gridArray[row, z] != true) //If the unit being looked at is empty
                     {
-                        for (int i = z; i < rowColumnSize - 1; i++) //For each unit in the row starting from unit
+                        for (int i = z; i <= rowColumnSize - 1; i++) //For each unit in the row starting from unit
                         {
                             if (gridArray[row, i] == true)
                             {
@@ -333,13 +336,11 @@ public class GridSetup : MonoBehaviour
                             {
                                 gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
                             }
-                            gridArray[row, i] = gridArray[row, i + 1]; //Move all units in the row left
                         }
                         gridArray[row, rowColumnSize - 1] = false; //Make the rightmost column have no image
                     }
 
                 }
-                emergencyStop++;
                 areSpaces = checkForRowSpaces(row);
             }
             CheckArray(); //Check to make sure it works
@@ -354,7 +355,6 @@ public class GridSetup : MonoBehaviour
         int emergencyStop = 0; //Used in case of infinite loop
         string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
         int indexOfSpace=0; //Used to find the index where there is a blank image in between two images
-        bool hasBeenRunThrough = false; //Used when moving units with spaces between images, to make sure the code moving everything up is only done one time per check. 
 
         for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
@@ -391,14 +391,12 @@ public class GridSetup : MonoBehaviour
                 }
                 gridArray[rowColumnSize - 1, column] = false;
             }
-            while (areSpaces == true && emergencyStop < rowColumnSize) //If there is an empty space between images
+            while (areSpaces == true) //If there is an empty space between images
             {
                 for (int z = 0; z <= rowColumnSize - 1; z++) //Iterate through the column
                 {
                     if (gridArray[z, column] != true) //If the unit being looked at is empty
                     {
-                        if (hasBeenRunThrough == false)
-                        {
                             indexOfSpace = z;
                             for (int i = z; i <= rowColumnSize - 1; i++) //For each unit in the column starting from unit
                             {
@@ -422,13 +420,10 @@ public class GridSetup : MonoBehaviour
                                 }
                             }
                             gridArray[rowColumnSize - 1, column] = false; //Make the bottom-most column have no image
-                            hasBeenRunThrough = true;
-                        }
+                        
                     }
 
                 }
-
-                hasBeenRunThrough = false;
                 areSpaces = checkForColumnSpaces(column);
                 emergencyStop++;
                 
@@ -446,7 +441,6 @@ public class GridSetup : MonoBehaviour
         int emergencyStop = 0; //Used in case of infinite loop
         string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
         int indexOfSpace = 0; //Used to find the index where there is a blank image in between two images
-        bool hasBeenRunThrough = false; //Used when moving units with spaces between images, to make sure the code moving everything up is only done one time per check.
 
         for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
@@ -478,7 +472,7 @@ public class GridSetup : MonoBehaviour
                     
                     if (i != 0) //Stops the array from going out of bounds
                     {
-                        gridArray[i, column] = gridArray[i -+1, column]; //Move all units in the column down
+                        gridArray[i, column] = gridArray[i -1, column]; //Move all units in the column down
                     }
                    
                 }
@@ -491,10 +485,8 @@ public class GridSetup : MonoBehaviour
                 {
                     if (gridArray[z, column] != true) //If the unit being looked at is empty
                     {
-                        if (hasBeenRunThrough == false)
-                        {
                             indexOfSpace = z;
-                            for (int i = z; i > 0; i--) //For each unit in the column starting from unit
+                            for (int i = z; i >= 0; i--) //For each unit in the column starting from unit
                             {
                                 if (gridArray[i, column] == true)
                                 {
@@ -510,18 +502,14 @@ public class GridSetup : MonoBehaviour
 
                                 }
                                 
-                                if (i != 3) //Stops the array from going out of bounds
+                                if (i != 0) //Stops the array from going out of bounds
                                 {
-                                    gridArray[i, column] = gridArray[i + 1, column]; //Move all units in the column down
+                                    gridArray[i, column] = gridArray[i - 1, column]; //Move all units in the column down
                                 }
                             }
                             gridArray[0, column] = false; //Make the Top-most column have no image
-                            hasBeenRunThrough = true;
-                        }
                     }
                 }
-
-                hasBeenRunThrough = false;
                 areSpaces = checkForColumnSpaces(column);
                 emergencyStop++;
             }
