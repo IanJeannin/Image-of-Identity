@@ -35,9 +35,14 @@ public class WordSelection : MonoBehaviour {
     // Quiet
     // Religious
     // Self-Conscious
+  
+    public Text listOfWords; //Text element of the chosen words textbox
+    [SerializeField]
+    private Button startButton;
 
-    private Text listOfWords; //Text element of the chosen words textbox
     private int wordCount=0; //How many words are currently being used
+    private int numberOfWords = 24; //How many words are currently in the game
+    private bool isUsed = false; //Checks if word clicked on is already in the list.
 
     private void Start()
     {
@@ -45,19 +50,73 @@ public class WordSelection : MonoBehaviour {
 
     }
 
-    private ArrayList wordsUsed; //ArrayList used to store values referencing words. Will be used in the GridSetup Class to use the correct shapes. 
-
-	public void ChangeWords( string word) //Function that will be on all word buttons, when pressed, will add value based on word to the list
+    private void Update()
     {
-        for (int i = 0; i <= wordCount; i++)
+        if(wordCount>=3) //If at least 3 words are being used
         {
-            //TODO: Iterate through listOfWords to see if any are being used
-
-            wordsUsed.Add(word);  //Adds value to the list based on the word pressed. 
-            wordCount++; //Increases word count
+            startButton.interactable = true; //Allow use of start button
         }
-        listOfWords.text = listOfWords.text + word+", "; //Adds words to the text every time the button is clicked
+        else //If there are less than 3 words being used
+        {
+            startButton.interactable = false; //Do not allow use of start button
+        }
     }
+
+    public List<string> wordsUsed; //ArrayList used to store values referencing words. Will be used in the GridSetup Class to use the correct shapes. 
+
+	public void ChangeWords(string word) //Function that will be on all word buttons, when pressed, will add word to the array
+    {
+        if (wordCount > 0&&wordCount<9) //If the list has at least one word in it, but not more than nine
+        {
+            for (int i = 0; i < wordCount; i++) //Iterate through the list
+            {
+               if(wordsUsed[i]==word) //Checks if list already has word in it
+                {
+                    isUsed = true; 
+                }
+            }
+            if(isUsed==false) //If the list does not already have the word in it
+            {
+                wordsUsed.Add(word); //Add the word
+                wordCount++; //Increases word count
+            }
+            else //If the list does have the word in it
+            {
+                wordsUsed.Remove(word); //Remove the word from the list
+                wordCount--; //Decrease word count
+                isUsed = false;
+                
+            }
+        }
+        else if(wordCount==0)//If list has no words in it
+        {
+            wordsUsed.Add(word);  //Add word
+            wordCount++; //Increase word count
+        }
+        else //If list is at max capacity (nine)
+        {
+            for (int i = 0; i < wordCount; i++) //Iterate through the list
+            {
+                if (wordsUsed[i] == word) //Checks if list already has word in it
+                {
+                    isUsed = true;
+                }
+            }
+            if(isUsed==true) //If word already used
+            {
+                wordsUsed.Remove(word); //Remove word
+                wordCount--; //Decrease wordCount
+                isUsed = false; //To stop isUsed from staying true next time button is clicked
+            }
+        }
+        listOfWords.text = "Chosen Words: "; //Starts text
+        for (int c = 0; c < wordCount; c++) //Iterates through wordsUsed
+        {
+            listOfWords.text = listOfWords.text + wordsUsed[c]+", "; //Put all words currently being used in text box
+        }//Adds words to the text every time the button is clicked
+    }
+
+
 
 
 }
