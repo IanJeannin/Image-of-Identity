@@ -12,17 +12,23 @@ public class GridSetup : MonoBehaviour
      private GameObject blankImage; //Blank Square used for empty spaces
      */
 
-    private int rowColumnSize = 4;
+    WordSelection script; //WordSelection script
+    private int rowColumnSize = 4; //size of the grid
     private int numberOfGridUnits = 16; //Set Medium Sized Grid with 16 units
     private bool[,] gridArray = new bool[4, 4];  //Create a 2D array for keeping track of grid units
-    private int maxObjects = 9;
+    private int numberOfObjects;
     float size = 1.25f; //Size of the objects
     int numberOfBlankImages = 0;
-    private GameObject newBlank; //Used to create new blank images with unique names
+    private GameObject newBlank; //Used to create new blank images with unique name
+
+    private List<string> words; //List of words chosen in previous page
 
 
     private void Start()
     {
+        script = GetComponent<WordSelection>(); //Sets script equal to the word selection script
+        words = WordSelection.GetList(); //Makes the list "words" equal to the list "wordsUsed" from the WordSelection screen/script
+        numberOfObjects = words.Count;
         CreateGrid();
         CheckArray();
     }
@@ -30,13 +36,14 @@ public class GridSetup : MonoBehaviour
     private void CreateGrid()
     {
         GameObject newObject; //Create Instance of Game Object
-        int numberOfObjects = 9; //Sets number of Objects player has chosen
         int gridArrayRow = 0; //For selecting row of gridArray
         int gridArrayColumn = 0; //For selecting the column of the gridArray
         string nameOfObject;
         int objectNumber = 0;
         float xPos = 0f; //xPosition of an object
         float yPos = 1f; //yPosition of an object
+        int maxObjects = numberOfObjects;
+        int currentWord = 0; //Used to track the current word in the array
 
         for (int i = 0; i < numberOfGridUnits; i++)
         {
@@ -48,20 +55,21 @@ public class GridSetup : MonoBehaviour
             numberOfBlankImages++; //Increase the variable marking down how many blank images there are
             newObject.transform.position = new Vector3(xPos, yPos, 5); //Sets object to proper position
 
-
-            if ((i + 1) % rowColumnSize != 0 && numberOfObjects > 0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
+            if ((i + 1) % rowColumnSize != 0 && maxObjects > 0) //If square is not in last column and there are still unused chosen images, fill the grid unit with an image
             {
                 // OLD CODE===========================================================================:newObject = (GameObject)Instantiate(sampleImage, transform); //Creates objects to fill grid
                 //newObject.GetComponent<Image>().color = Random.ColorHSV(); //Gives Square random color
-                nameOfObject = "Polygon (" + objectNumber + ")";
+                
+                nameOfObject = words[currentWord]; //Sets the name of the object to the string at the given index of the words array
                 newObject = GameObject.Find(nameOfObject);
                 //POSSIBLY USE  Instantiate(newObject, transform);
                 newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
-                numberOfObjects--; //Decrements numberOfObjects until all chosen images are used
+                maxObjects--; //Decrements numberOfObjects until all chosen images are used
                 xPos += size;
                 gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
                 gridArrayColumn++;
                 objectNumber++; //When image is used, move to next image
+                currentWord++;
             }
             else if ((i + 1) % rowColumnSize == 0)//If Square is in last column
             {
@@ -199,10 +207,12 @@ public class GridSetup : MonoBehaviour
 
     private void rowRight(int row) //Moves all units in a row right, until there are no blank spaces on the rightmost column
     {
+
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
         int emergencyStop = 0; //Used in case of infinite loop
         string nameOfObject;
+        int maxObjects = numberOfObjects; //Maximum number of shapes allowed
 
         for (int x = 0; x < rowColumnSize; x++) //Iterate through all grid units in row
         {
@@ -220,9 +230,9 @@ public class GridSetup : MonoBehaviour
                 {
                     if (gridArray[row, i] == true)
                     {
-                        for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
+                        for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects that were chosen
                         {
-                            nameOfObject = "Polygon (" + numberOfObject + ")";
+                            nameOfObject = words[numberOfObject];
                             if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
                             {
                                 GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
@@ -249,7 +259,7 @@ public class GridSetup : MonoBehaviour
                             {
                                 for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                                 {
-                                    nameOfObject = "Polygon (" + numberOfObject + ")";
+                                    nameOfObject = words[numberOfObject];
                                     if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
                                     {
                                         GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) + size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
@@ -273,6 +283,7 @@ public class GridSetup : MonoBehaviour
 
     private void rowLeft(int row)
     {
+        int maxObjects = numberOfObjects; //Maximum number of shapes allowed
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
         string nameOfObject;
@@ -295,7 +306,7 @@ public class GridSetup : MonoBehaviour
                     {
                         for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                         {
-                            nameOfObject = "Polygon (" + numberOfObject + ")";
+                            nameOfObject = words[numberOfObject];
                             if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
                             {
                                 GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
@@ -324,7 +335,7 @@ public class GridSetup : MonoBehaviour
                             {
                                 for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                                 {
-                                    nameOfObject = "Polygon (" + numberOfObject + ")";
+                                    nameOfObject = words[numberOfObject];
                                     if (GameObject.Find(nameOfObject).transform.position == new Vector3(i * size, 1 - (row * size)))
                                     {
                                         GameObject.Find(nameOfObject).transform.position = new Vector3((i * size) - size, 1 - (row * size)); //Moves the game object that matches the current position being looked at right
@@ -355,6 +366,7 @@ public class GridSetup : MonoBehaviour
         int emergencyStop = 0; //Used in case of infinite loop
         string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
         int indexOfSpace=0; //Used to find the index where there is a blank image in between two images
+        int maxObjects = numberOfObjects; //Maximum number of shapes allowed
 
         for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
@@ -375,7 +387,7 @@ public class GridSetup : MonoBehaviour
 
                         for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                         {
-                            nameOfObject = "Polygon (" + numberOfObject + ")";
+                            nameOfObject = words[numberOfObject];
                             if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size))) //Compares position of each image to unit, once correct image is found...
                             {
                                 GameObject.Find(nameOfObject).transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Moves the game object that matches the current position being looked at up
@@ -405,8 +417,8 @@ public class GridSetup : MonoBehaviour
 
                                     for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                                     {
-                                        nameOfObject = "Polygon (" + numberOfObject + ")";
-                                        if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
+                                    nameOfObject = words[numberOfObject];
+                                    if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size))) //Find the blank image that matches the position of the unit
                                         {
                                             GameObject.Find(nameOfObject).transform.position = new Vector3(column * size, 1 - ((i - 1) * size)); //Moves the game object that matches the current position being looked at up
                                         }
@@ -441,6 +453,7 @@ public class GridSetup : MonoBehaviour
         int emergencyStop = 0; //Used in case of infinite loop
         string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
         int indexOfSpace = 0; //Used to find the index where there is a blank image in between two images
+        int maxObjects = numberOfObjects; //Maximum number of shapes allowed
 
         for (int y = 0; y < rowColumnSize; y++) //Iterate through all grid units in column
         {
@@ -461,7 +474,7 @@ public class GridSetup : MonoBehaviour
 
                         for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                         {
-                            nameOfObject = "Polygon (" + numberOfObject + ")";
+                            nameOfObject=words[numberOfObject];
                             if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size))) //Compares position of each image to unit, once correct image is found...
                             {
                                 GameObject.Find(nameOfObject).transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Moves the game object that matches the current position being looked at down
@@ -493,8 +506,8 @@ public class GridSetup : MonoBehaviour
 
                                     for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
                                     {
-                                        nameOfObject = "Polygon (" + numberOfObject + ")";
-                                        if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size)))//Find the blank image that matches the position of the unit
+                                     nameOfObject = words[numberOfObject];
+                                    if (GameObject.Find(nameOfObject).transform.position == new Vector3(column * size, 1 - (i * size)))//Find the blank image that matches the position of the unit
                                         {
                                             GameObject.Find(nameOfObject).transform.position = new Vector3(column * size, 1 - ((i + 1) * size)); //Moves the game object that matches the current position being looked at down
                                         }

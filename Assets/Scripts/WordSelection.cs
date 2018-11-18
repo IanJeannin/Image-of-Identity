@@ -40,9 +40,10 @@ public class WordSelection : MonoBehaviour {
     [SerializeField]
     private Button startButton;
 
-    private int wordCount=0; //How many words are currently being used
+    private static int wordCount=0; //How many words are currently being used
     private int numberOfWords = 24; //How many words are currently in the game
     private bool isUsed = false; //Checks if word clicked on is already in the list.
+    private static List<string> wordsUsed=new List<string>(); //ArrayList used to store values referencing words. Will be used in the GridSetup Class to use the correct shapes. 
 
     private void Start()
     {
@@ -62,7 +63,7 @@ public class WordSelection : MonoBehaviour {
         }
     }
 
-    public List<string> wordsUsed; //ArrayList used to store values referencing words. Will be used in the GridSetup Class to use the correct shapes. 
+  
 
 	public void ChangeWords(string word) //Function that will be on all word buttons, when pressed, will add word to the array
     {
@@ -117,6 +118,14 @@ public class WordSelection : MonoBehaviour {
     }
 
 
+    public static int GetCount() //Used to access wordCount
+    {
+        return wordCount;
+    }
 
+    public static List<string> GetList() //Used to access list of words
+    {
+        return wordsUsed;
+    }
 
 }
