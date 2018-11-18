@@ -21,6 +21,8 @@ public class GridSetup : MonoBehaviour
     int numberOfBlankImages = 0;
     private GameObject newBlank; //Used to create new blank images with unique name
 
+    private GameObject currentImage; //Used to find the currently selected image
+
     private List<string> words; //List of words chosen in previous page
 
 
@@ -32,6 +34,7 @@ public class GridSetup : MonoBehaviour
         CreateGrid();
         CheckArray();
     }
+    
 
     private void CreateGrid()
     {
@@ -574,4 +577,21 @@ public class GridSetup : MonoBehaviour
         return false; //Return false if no gaps were found
     }
 
+    private void OnMouseDown()
+    {
+        int maxObjects = numberOfObjects; //Maximum number of shapes allowed
+        string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
+        Vector3 mousePos = new Vector3(Input.mousePosition.x-(9.15f/2), Input.mousePosition.y-(5/2)); //Sets mousePos to the mouses position based on the center of the camera rather than the bottom left
+            for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
+            {
+                nameOfObject = words[numberOfObject];
+
+                    //Find the image the mouse is within the bounds of when the button was pressed
+                if (mousePos.x>=GameObject.Find(nameOfObject).transform.position.x-1.25 && mousePos.x<= GameObject.Find(nameOfObject).transform.position.x + 1.25 && mousePos.y<= GameObject.Find(nameOfObject).transform.position.y - 1.25 && mousePos.y <= GameObject.Find(nameOfObject).transform.position.y + 1.25) 
+                {
+                  currentImage = GameObject.Find(nameOfObject); //Sets the current object to the one clicked on 
+                }
+            }
+        Debug.Log("Current Object: " + currentImage);
+    }
 }
