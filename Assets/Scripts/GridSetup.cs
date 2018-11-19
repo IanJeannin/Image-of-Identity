@@ -591,28 +591,46 @@ public class GridSetup : MonoBehaviour
         string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
             Vector3 mousePos = new Vector3(Input.mousePosition.x-(9.15f/2), Input.mousePosition.y-(5f/2)); //Sets mousePos to the mouses position based on the center of the camera rather than the bottom left
         mousePos = Camera.main.ScreenToWorldPoint(mousePos); //Puts mouse position based on 'world space' rather than 'screen space'
-        for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
+        Collider2D imageCollider;
+
+        /*for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
             {
-                nameOfObject = words[numberOfObject];
-                float x= GameObject.Find(nameOfObject).transform.position.x;
-               float z= GameObject.Find(nameOfObject).transform.position.y;
 
-                Vector3 abc = new Vector3(x, z);
-                Debug.Log(mousePos);
-                Debug.Log(abc);
-            //GameObject abcd = GameObject.Find(nameOfObject);
-            //abcd.transform.position = new Vector3(abcd.transform.position.x - 0.65f, abcd.transform.position.y - 0.6f);
+            nameOfObject = words[numberOfObject];
+             float x= GameObject.Find(nameOfObject).transform.position.x;
+             float z= GameObject.Find(nameOfObject).transform.position.y;
+             imageCollider = GameObject.Find(nameOfObject).GetComponent<Collider2D>();
 
-                //Find the image the mouse is within the bounds of when the button was pressed
-                if (mousePos.x>=x-0.65f && mousePos.x<= x-0.65f&& mousePos.y >= z-0.6f && mousePos.y <= z+0.6f) 
-                {
-                  currentImage = GameObject.Find(nameOfObject); //Sets the current object to the one clicked on 
-                  GameObject y = Instantiate(GameObject.Find("Polygon"));
-                  y.transform.position = new Vector3(mousePos.x, mousePos.y);
-                }
+             Vector3 abc = new Vector3(x, z);
+             Debug.Log(mousePos);
+             Debug.Log(abc);
+         //GameObject abcd = GameObject.Find(nameOfObject);
+         //abcd.transform.position = new Vector3(abcd.transform.position.x - 0.65f, abcd.transform.position.y - 0.6f);
+
+         //Find the image the mouse is within the bounds of when the button was pressed
+         // if (mousePos.x>=x-0.65f && mousePos.x<= x-0.65f&& mousePos.y >= z-0.6f && mousePos.y <= z+0.6f) 
+         if (imageCollider.bounds.Contains(Input.mousePosition))
+         {
+               currentImage = GameObject.Find(nameOfObject); //Sets the current object to the one clicked on 
+               GameObject y = Instantiate(GameObject.Find("Polygon"));
+               y.transform.position = new Vector3(mousePos.x, mousePos.y);
+               Debug.Log("Current Object: " + currentImage);
+         }*/
+
+        
+            Vector2 rayPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y); //Creates vector2 at mouse position
+            RaycastHit2D hit = Physics2D.Raycast(rayPos, Vector2.zero, 0f); //Raycasts from camera to mouse position, returning object hit
+
+            if (hit) //If something is hit
+            {
+                currentImage= hit.transform.gameObject; //Make that image the current image
+                Debug.Log("Current Image: "+currentImage);
+
             }
+
+        //}
         
         
-        Debug.Log("Current Object: " + currentImage);
+       
     }
 }
