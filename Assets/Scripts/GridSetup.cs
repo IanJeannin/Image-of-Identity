@@ -629,14 +629,25 @@ public class GridSetup : MonoBehaviour
                 Debug.Log("Current Image: "+currentImage);
 
             }
-            else
+          /*  else
             {
                   currentImage = null;
             }
+            */
 
         //}
         
         
        
+    }
+
+    //Function used to rotate squares
+    public void RotateImage()
+    {
+        //While there is a current image
+        if(currentImage!=null)
+        {
+            currentImage.transform.Rotate(Vector3.forward * -90f); //Rotates current image 90 degrees
+        }
     }
 }
