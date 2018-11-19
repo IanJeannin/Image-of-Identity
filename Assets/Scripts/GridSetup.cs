@@ -103,6 +103,15 @@ public class GridSetup : MonoBehaviour
                 newObject = GameObject.Find(nameOfObject);
                 //POSSIBLY USE  Instantiate(newObject, transform);
                 newObject.transform.position = new Vector2(xPos, yPos); //Sets object to proper position
+
+                //================================================================
+                //CHANGES BACKGROUND COLOR
+                SpriteRenderer[] background = newObject.gameObject.GetComponentsInChildren<SpriteRenderer>(); //Gets sprite renderer of current image
+                Color backgroundColor; //Makes a new Color variable
+                ColorUtility.TryParseHtmlString("#000000", out backgroundColor); //Makes Color equal to the color chosen by button
+                background[1].color = backgroundColor; //Changes foreground color
+                //==========================================================================
+
                 maxObjects--; //Decrements numberOfObjects until all chosen images are used
                 xPos += size;
                 gridArray[gridArrayRow, gridArrayColumn] = true; //Sets gridArray index as true
@@ -649,5 +658,31 @@ public class GridSetup : MonoBehaviour
         {
             currentImage.transform.Rotate(Vector3.forward * -90f); //Rotates current image 90 degrees
         }
+    }
+
+    //Function used to change foreground color
+    public void ChangeForegroundColor(string color)
+    {
+        SpriteRenderer foreground = currentImage.GetComponent<SpriteRenderer>(); //Gets sprite renderer of current image
+        Color foregroundColor; //Makes a new Color variable
+        ColorUtility.TryParseHtmlString(color, out foregroundColor); //Makes Color equal to the color chosen by button
+        foreground.color = foregroundColor; //Changes foreground color
+    }
+
+    //Function used to change background color
+    public void ChangeBackgroundColor(string color)
+    {
+        /*
+        Renderer background = currentImage.gameObject.GetComponentInChildren<Renderer>(); //Gets sprite renderer of child object of current image (Background)
+        Color backgroundColor; //Makes a new Color variable
+        ColorUtility.TryParseHtmlString(color, out backgroundColor); //Makes Color equal to the color chosen by button
+        background.material.shader = Shader.Find("Shapes2D Material");
+        background.material.SetColor("Shapes2D Material", backgroundColor); //Changes backgrond color
+        */
+
+        SpriteRenderer [] background= currentImage.gameObject.GetComponentsInChildren<SpriteRenderer>(); //Gets sprite renderer of current image
+        Color backgroundColor; //Makes a new Color variable
+        ColorUtility.TryParseHtmlString(color, out backgroundColor); //Makes Color equal to the color chosen by button
+        background[1].color = backgroundColor; //Changes foreground color
     }
 }
