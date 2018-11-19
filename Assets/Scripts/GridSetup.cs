@@ -41,6 +41,34 @@ public class GridSetup : MonoBehaviour
         {
             OnMouseDown();
         }
+
+        for(int blankShade=0;blankShade<numberOfBlankImages;blankShade++) //Iterates through blank shapes
+        {
+            //If an image is selected, finds the blanks shape that shares it's position
+            if(currentImage!=null&&currentImage.transform.position.x==GameObject.Find("Blank"+blankShade).transform.position.x && currentImage.transform.position.y == GameObject.Find("Blank" + blankShade).transform.position.y)
+            {
+                SpriteRenderer blankColor=GameObject.Find("Blank" + blankShade).GetComponent<SpriteRenderer>(); //Get sprite renderer of blank shape
+                blankColor.color = Color.cyan; //Change color of blank shape to yellow
+                SpriteRenderer blankNotSelected = GameObject.Find("Blank").GetComponent<SpriteRenderer>(); //Get sprite renderer of 'blank'
+                blankNotSelected.color = Color.white; //Ensure that it doesn't stay colored when image moves from 'blank' to 'blank#
+            }
+            //If an image is selected, and 'blank' matches it's position
+            else if(currentImage!=null&&currentImage.transform.position.x == GameObject.Find("Blank").transform.position.x && currentImage.transform.position.y == GameObject.Find("Blank").transform.position.y)
+            {
+                SpriteRenderer blankColor = GameObject.Find("Blank").GetComponent<SpriteRenderer>(); //Get sprite renderer of 'blank'
+                blankColor.color = Color.cyan; //Change it's color to yellow
+                SpriteRenderer unSelected = GameObject.Find("Blank" + blankShade).GetComponent<SpriteRenderer>(); //Ensure all other blanks are default color
+                unSelected.color = Color.white;
+            }
+            //For all nonchosen shapes, reverts them back to default color
+            else
+            {
+                SpriteRenderer unSelected = GameObject.Find("Blank"+blankShade).GetComponent<SpriteRenderer>();
+                unSelected.color = Color.white;
+                SpriteRenderer blankNotSelected = GameObject.Find("Blank").GetComponent<SpriteRenderer>();
+                blankNotSelected.color = Color.white;
+            }
+        }
     }
 
 
@@ -588,34 +616,8 @@ public class GridSetup : MonoBehaviour
     private void OnMouseDown()
     {
         int maxObjects = numberOfObjects; //Maximum number of shapes allowed
-        string nameOfObject; //Used to reference all objects, in order to find the correct one based on position
             Vector3 mousePos = new Vector3(Input.mousePosition.x-(9.15f/2), Input.mousePosition.y-(5f/2)); //Sets mousePos to the mouses position based on the center of the camera rather than the bottom left
         mousePos = Camera.main.ScreenToWorldPoint(mousePos); //Puts mouse position based on 'world space' rather than 'screen space'
-        Collider2D imageCollider;
-
-        /*for (int numberOfObject = 0; numberOfObject < maxObjects; numberOfObject++) //Iterates through all of the objects
-            {
-
-            nameOfObject = words[numberOfObject];
-             float x= GameObject.Find(nameOfObject).transform.position.x;
-             float z= GameObject.Find(nameOfObject).transform.position.y;
-             imageCollider = GameObject.Find(nameOfObject).GetComponent<Collider2D>();
-
-             Vector3 abc = new Vector3(x, z);
-             Debug.Log(mousePos);
-             Debug.Log(abc);
-         //GameObject abcd = GameObject.Find(nameOfObject);
-         //abcd.transform.position = new Vector3(abcd.transform.position.x - 0.65f, abcd.transform.position.y - 0.6f);
-
-         //Find the image the mouse is within the bounds of when the button was pressed
-         // if (mousePos.x>=x-0.65f && mousePos.x<= x-0.65f&& mousePos.y >= z-0.6f && mousePos.y <= z+0.6f) 
-         if (imageCollider.bounds.Contains(Input.mousePosition))
-         {
-               currentImage = GameObject.Find(nameOfObject); //Sets the current object to the one clicked on 
-               GameObject y = Instantiate(GameObject.Find("Polygon"));
-               y.transform.position = new Vector3(mousePos.x, mousePos.y);
-               Debug.Log("Current Object: " + currentImage);
-         }*/
 
         
             Vector2 rayPos = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y); //Creates vector2 at mouse position
@@ -626,6 +628,10 @@ public class GridSetup : MonoBehaviour
                 currentImage= hit.transform.gameObject; //Make that image the current image
                 Debug.Log("Current Image: "+currentImage);
 
+            }
+            else
+            {
+                  currentImage = null;
             }
 
         //}
