@@ -9,6 +9,7 @@ public class Scenes : MonoBehaviour {
     public void ChangeScene(string sceneName) //Function used to move on to the next scene
     {
         SceneManager.LoadScene(sceneName);
+        
     }
 
     public void Quit()

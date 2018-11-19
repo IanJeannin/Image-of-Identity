@@ -255,7 +255,7 @@ public class GridSetup : MonoBehaviour
 
     private void rowRight(int row) //Moves all units in a row right, until there are no blank spaces on the rightmost column
     {
-
+        
         bool allEmpty = true; //If all grid units in row are empty
         bool areSpaces = checkForRowSpaces(row); //Used to check if there are spaces between images
         int emergencyStop = 0; //Used in case of infinite loop
@@ -272,6 +272,7 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
+            SoundManager.MoveSound();
             while (gridArray[row, rowColumnSize - 1] == false) //While the rightmost column has no image
             {
                 for (int i = rowColumnSize - 1; i >= 0; i--) //For each unit in the row
@@ -346,6 +347,7 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
+            SoundManager.MoveSound();
             while (gridArray[row, 0] == false) //While the leftmost column has no image
             {
                 for (int i = 0; i <= rowColumnSize - 1; i++) //For each unit in the row
@@ -426,6 +428,7 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the column has an image...
         {
+            SoundManager.MoveSound(); //Plays audio sound
             while (gridArray[0, column] == false) //While the topmost column has no image
             {
                 for (int i = 0; i <= rowColumnSize - 1; i++) //For each unit in the column
@@ -513,6 +516,7 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
+            SoundManager.MoveSound();
             while (gridArray[rowColumnSize - 1, column] == false) //While the bottom-most row has no image
             {
                 for (int i = rowColumnSize - 1; i >= 0; i--) //For each unit in the column
