@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour {
 
-    private static AudioClip[] sounds = new AudioClip[8]; //Array of sound effects
+    private static AudioClip[] sounds = new AudioClip[9]; //Array of sound effects
     private static AudioSource audio; //Audio source
 
 	// Use this for initialization
@@ -20,6 +20,8 @@ public class SoundManager : MonoBehaviour {
         sounds[6] = Resources.Load<AudioClip>("Button_27_Pack2");
         //Start Sound
         sounds[7] = Resources.Load<AudioClip>("Button_1_Pack2");
+        //Color Sound
+        sounds[8] = Resources.Load<AudioClip>("Button_17_Pack2");
 
         audio = GetComponent<AudioSource>(); //Sets the scenes audio source to audio
     }
@@ -32,6 +34,11 @@ public class SoundManager : MonoBehaviour {
     public static void StartSound()
     {
         audio.PlayOneShot(sounds[7]);
+    }
+
+    public static void ColorSound()
+    {
+        audio.PlayOneShot(sounds[8]);
     }
     
 }

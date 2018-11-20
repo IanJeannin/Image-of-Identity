@@ -22,7 +22,7 @@ public class GridSetup : MonoBehaviour
     private GameObject newBlank; //Used to create new blank images with unique name
 
     private GameObject currentImage; //Used to find the currently selected image
-
+    private bool isMuted = false; //Determines whether or not sounds will play
     private List<string> words; //List of words chosen in previous page
 
 
@@ -48,7 +48,7 @@ public class GridSetup : MonoBehaviour
             if(currentImage!=null&&currentImage.transform.position.x==GameObject.Find("Blank"+blankShade).transform.position.x && currentImage.transform.position.y == GameObject.Find("Blank" + blankShade).transform.position.y)
             {
                 SpriteRenderer blankColor=GameObject.Find("Blank" + blankShade).GetComponent<SpriteRenderer>(); //Get sprite renderer of blank shape
-                blankColor.color = Color.cyan; //Change color of blank shape to yellow
+                blankColor.color = Color.green; //Change color of blank shape to yellow
                 SpriteRenderer blankNotSelected = GameObject.Find("Blank").GetComponent<SpriteRenderer>(); //Get sprite renderer of 'blank'
                 blankNotSelected.color = Color.white; //Ensure that it doesn't stay colored when image moves from 'blank' to 'blank#
             }
@@ -56,7 +56,7 @@ public class GridSetup : MonoBehaviour
             else if(currentImage!=null&&currentImage.transform.position.x == GameObject.Find("Blank").transform.position.x && currentImage.transform.position.y == GameObject.Find("Blank").transform.position.y)
             {
                 SpriteRenderer blankColor = GameObject.Find("Blank").GetComponent<SpriteRenderer>(); //Get sprite renderer of 'blank'
-                blankColor.color = Color.cyan; //Change it's color to yellow
+                blankColor.color = Color.green; //Change it's color to yellow
                 SpriteRenderer unSelected = GameObject.Find("Blank" + blankShade).GetComponent<SpriteRenderer>(); //Ensure all other blanks are default color
                 unSelected.color = Color.white;
             }
@@ -272,7 +272,10 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
-            SoundManager.MoveSound();
+            if (isMuted == false)
+            {
+                SoundManager.MoveSound(); //Play Audio Sound
+            }
             while (gridArray[row, rowColumnSize - 1] == false) //While the rightmost column has no image
             {
                 for (int i = rowColumnSize - 1; i >= 0; i--) //For each unit in the row
@@ -347,7 +350,10 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
-            SoundManager.MoveSound();
+            if (isMuted == false)
+            {
+                SoundManager.MoveSound(); //Play Audio Sound
+            }
             while (gridArray[row, 0] == false) //While the leftmost column has no image
             {
                 for (int i = 0; i <= rowColumnSize - 1; i++) //For each unit in the row
@@ -428,7 +434,10 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the column has an image...
         {
-            SoundManager.MoveSound(); //Plays audio sound
+            if (isMuted == false)
+            {
+                SoundManager.MoveSound(); //Play Audio Sound
+            }
             while (gridArray[0, column] == false) //While the topmost column has no image
             {
                 for (int i = 0; i <= rowColumnSize - 1; i++) //For each unit in the column
@@ -516,7 +525,10 @@ public class GridSetup : MonoBehaviour
 
         if (allEmpty == false) //As long as at least one unit in the row has an image...
         {
-            SoundManager.MoveSound();
+            if(isMuted==false)
+            {
+                SoundManager.MoveSound();
+            }
             while (gridArray[rowColumnSize - 1, column] == false) //While the bottom-most row has no image
             {
                 for (int i = rowColumnSize - 1; i >= 0; i--) //For each unit in the column
@@ -667,6 +679,10 @@ public class GridSetup : MonoBehaviour
     //Function used to change foreground color
     public void ChangeForegroundColor(string color)
     {
+        if(isMuted==false)
+        {
+            SoundManager.ColorSound();
+        }
         SpriteRenderer foreground = currentImage.GetComponent<SpriteRenderer>(); //Gets sprite renderer of current image
         Color foregroundColor; //Makes a new Color variable
         ColorUtility.TryParseHtmlString(color, out foregroundColor); //Makes Color equal to the color chosen by button
@@ -676,17 +692,20 @@ public class GridSetup : MonoBehaviour
     //Function used to change background color
     public void ChangeBackgroundColor(string color)
     {
-        /*
-        Renderer background = currentImage.gameObject.GetComponentInChildren<Renderer>(); //Gets sprite renderer of child object of current image (Background)
-        Color backgroundColor; //Makes a new Color variable
-        ColorUtility.TryParseHtmlString(color, out backgroundColor); //Makes Color equal to the color chosen by button
-        background.material.shader = Shader.Find("Shapes2D Material");
-        background.material.SetColor("Shapes2D Material", backgroundColor); //Changes backgrond color
-        */
+        if (isMuted == false)
+        {
+            SoundManager.ColorSound();
+        }
 
         SpriteRenderer [] background= currentImage.gameObject.GetComponentsInChildren<SpriteRenderer>(); //Gets sprite renderer of current image
         Color backgroundColor; //Makes a new Color variable
         ColorUtility.TryParseHtmlString(color, out backgroundColor); //Makes Color equal to the color chosen by button
         background[1].color = backgroundColor; //Changes foreground color
+    }
+
+    public void Mute() //Function to mute/unmute game sounds
+    {
+        isMuted = !isMuted; //Makes isMuted equal whatever it currently is not
+        currentImage = null;
     }
 }

@@ -61,6 +61,12 @@ public class WordSelection : MonoBehaviour {
         {
             startButton.interactable = false; //Do not allow use of start button
         }
+
+        listOfWords.text = "Chosen Words: "; //Starts text
+        for (int c = 0; c < wordCount; c++) //Iterates through wordsUsed
+        {
+            listOfWords.text = listOfWords.text + wordsUsed[c] + ", "; //Put all words currently being used in text box
+        }//Adds words to the text every time the button is clicked
     }
 
   
@@ -110,11 +116,7 @@ public class WordSelection : MonoBehaviour {
                 isUsed = false; //To stop isUsed from staying true next time button is clicked
             }
         }
-        listOfWords.text = "Chosen Words: "; //Starts text
-        for (int c = 0; c < wordCount; c++) //Iterates through wordsUsed
-        {
-            listOfWords.text = listOfWords.text + wordsUsed[c]+", "; //Put all words currently being used in text box
-        }//Adds words to the text every time the button is clicked
+        
     }
 
 
